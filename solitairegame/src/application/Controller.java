@@ -45,21 +45,17 @@ public class Controller implements Initializable{
 		logicBoard = new Board(boardSize,boardType);
 		//boardSize = boardSizeSpinner.getValue(); //BREAKS THE PROGRAM: FIX FOR SPRINT3
 		setBoard();
-		
 	}
 	
 	@FXML
 	public void boardType(ActionEvent e) {
 		if(eng.isSelected()) {
-			System.out.println("boardType(english): TODO");
 			boardType = "english";
 		}
 		else if(hex.isSelected()) {
-			System.out.println("boardType(hexagon): TODO");
 			boardType = "hexagon";
 		}
 		else if(dia.isSelected()) {
-			System.out.println("boardType(diamond): TODO");
 			boardType = "diamond";
 		}
 		
@@ -83,8 +79,11 @@ public class Controller implements Initializable{
 	        for (int col = 0; col < boardSize; col++) {
 	            Button btn = new Button();
 	            btn.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-	            btn.setOnAction(e -> buttonClick());
+	            final int r = row;
+	            final int c = col;
+	            btn.setOnAction(e -> buttonClick(r,c));
 	        	buttons[row][col] = btn;
+	        	buttons[row][col].setOpacity(0);
 	            boardGrid.add(btn, col, row);
 	        }
 	    }
@@ -93,26 +92,48 @@ public class Controller implements Initializable{
 		//change visual layout/button layout to match logicBoard
 		for(int row = 0;row<boardSize;row++) {
 			for(int col = 0;col<boardSize;col++) {
-				if(logicBoard.getBoardAt(row,col).getIsAlive() == -1) {
-					buttons[row][col].setOpacity(0);
-					buttons[row][col].setDisable(true);
-					buttons[row][col].setText("");
+				Peg currPeg = logicBoard.getBoardAt(row,col);
+				Button currBtn = buttons[row][col];
+				if(currPeg.getIsAlive() == -1) {
+					currBtn.setOpacity(0);
+					currBtn.setDisable(true);
+					currBtn.setText("");
 				}
-				else if(logicBoard.getBoardAt(row,col).getIsAlive() == 0) {
-					buttons[row][col].setOpacity(1);
-					buttons[row][col].setDisable(false);
-					buttons[row][col].setText("0");
+				else if(currPeg.getIsAlive() == 0) {
+					currBtn.setOpacity(1);
+					currBtn.setDisable(false);
+					currBtn.setText("0");
+					currBtn.setStyle("");
 				}
 				else {
-					buttons[row][col].setOpacity(1);
-					buttons[row][col].setDisable(false);
-					buttons[row][col].setText("1");
+					currBtn.setOpacity(1);
+					currBtn.setDisable(false);
+					currBtn.setText("●");
+					
+					if (currPeg.getIsSelected()) {
+	                    currBtn.setStyle("-fx-background-color: blue;");
+	                } else {
+	                    currBtn.setStyle("");
+	                }
 				}
 			}
 		}
 	}
-	private void buttonClick() {
-		//button logic
-		System.out.println("TODO: buttonCick");
+	private void buttonClick(int row,int col) {
+		String result = logicBoard.clickHandler(row, col);
+
+	    // Refresh the entire board display after every click
+	    setBoard();
+
+	    // React to the result
+	    switch (result) {
+	        case "moved" -> {
+	            if (logicBoard.isGameOver()) {
+	                System.out.println("Game Over");
+	            }
+	        }
+	        case "invalid_move" -> System.out.println("Invalid move!");
+	        // selected/deselected are handled visually by refreshBoard()
+	    }
 	}
 }
