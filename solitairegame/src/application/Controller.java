@@ -17,14 +17,14 @@ import javafx.scene.layout.RowConstraints;
 
 public class Controller implements Initializable{
 	
-	private Button[][] buttons; //grid for buttons
-	private Board logicBoard;
 	@FXML
 	private RadioButton eng, hex, dia;
 	@FXML
     private GridPane boardGrid;
 	@FXML
 	private Spinner<Integer> boardSizeSpinner;
+	private Button[][] buttons; //grid for buttons
+	private Board logicBoard;
 	private int boardSize; //int value to store board size for logic implementation
 	private String boardType; //"english","hexagon","Diamond"
 	

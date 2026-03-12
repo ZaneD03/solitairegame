@@ -1,7 +1,7 @@
 package application;
 
 public class Board {
-	private Peg[][] board;//2D array that holds Peg object as variables to represent the board
+	private Peg[][] board;
 	private int mid,boardSize,currRow,currCol;
 	private boolean hasSelection;
 	private String boardType;
@@ -30,6 +30,7 @@ public class Board {
 			System.out.println("Board.java: invalid boardType when constructing");//shouldnt be possible, replace with exception being thrown later
 		}
 	}
+	
 	private void englishBoard() {
 		int invalidBand = boardSize / 2 - 1;
 		for(int row = 0;row<boardSize;row++) {
@@ -86,7 +87,6 @@ public class Board {
 	}
 	
 	private boolean checkWin() {
-		//TODO
 		int count = 0;
 		for(int row = 0;row<boardSize;row++) {
 			for(int col = 0;col<boardSize;col++) {
@@ -115,9 +115,7 @@ public class Board {
 	    int distanceCol = newCol - col;
 
 	    // Must be exactly 2 steps orthogonally or diagonally
-	    if (!((Math.abs(distanceRow) == 2 && distanceCol == 0) ||         // vertical
-	          (distanceRow == 0 && Math.abs(distanceCol) == 2) ||         // horizontal
-	          (Math.abs(distanceRow) == 2 && Math.abs(distanceCol) == 2))) { // diagonal
+	    if (!((Math.abs(distanceRow) == 2 && distanceCol == 0) || (distanceRow == 0 && Math.abs(distanceCol) == 2) || (Math.abs(distanceRow) == 2 && Math.abs(distanceCol) == 2))) {
 	        return false;
 	    }
 
@@ -142,8 +140,11 @@ public class Board {
 	    		if (board[row][col].getIsAlive() == 1) {
 	    			for (int[] d : new int[][]{{0,2},{0,-2},{2,0},{-2,0}}) {
 	                    int tr = row + d[0], tc = col + d[1];
-	                    if (tr >= 0 && tr < boardSize && tc >= 0 && tc < boardSize)
-	                        if (isValidMove(row, col, tr, tc)) return false;
+	                    if (tr >= 0 && tr < boardSize && tc >= 0 && tc < boardSize) {
+	                        if (isValidMove(row, col, tr, tc)) {
+	                        	return false;	                    	
+	                        }
+	                    }
 	                }
 	    		}     
 	    	}      
