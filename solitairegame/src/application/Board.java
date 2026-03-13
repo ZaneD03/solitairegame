@@ -37,10 +37,10 @@ public class Board {
 		        else {
 		        	board[row][col] = new Peg(1,row,col);
 		        }
-		        //middle empty peg
-		        board[mid][mid] = new Peg(0,row,col);
 			}
 		}
+		//middle empty peg
+        board[mid][mid] = new Peg(0,mid,mid);
 	}
 	
 	private void diamondBoard() {
@@ -54,10 +54,10 @@ public class Board {
 				else {
 					board[row][col] = new Peg(-1,row,col);
 					 }
-				//middle empty peg
-				board[mid][mid] = new Peg(0,row,col);
 			}
 		}
+		//middle empty peg
+        board[mid][mid] = new Peg(0,mid,mid);
 	}
 	
 	private void hexagonBoard() {
@@ -72,10 +72,10 @@ public class Board {
 				else {
 					board[row][col] = new Peg(-1,row,col);
 					}
-				//middle empty peg
-		        board[mid][mid] = new Peg(0,row,col);
 			}
 		}
+		//middle empty peg
+        board[mid][mid] = new Peg(0,mid,mid);
 	}
 	
 	public Peg[][] getBoard() {
