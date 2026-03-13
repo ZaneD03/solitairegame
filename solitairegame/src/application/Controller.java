@@ -51,15 +51,12 @@ public class Controller implements Initializable{
 	@FXML
 	public void boardType(ActionEvent e) {
 		if(eng.isSelected()) {
-			System.out.println("boardType(english): TODO");
 			boardType = "english";
 		}
 		else if(hex.isSelected()) {
-			System.out.println("boardType(hexagon): TODO");
 			boardType = "hexagon";
 		}
 		else if(dia.isSelected()) {
-			System.out.println("boardType(diamond): TODO");
 			boardType = "diamond";
 		}
 		
