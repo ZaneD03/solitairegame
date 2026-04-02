@@ -1,10 +1,13 @@
 package application;
 
+import java.util.Random;
+
 public class Board {
 	private Peg[][] board;
 	private int mid,boardSize,currRow,currCol;
 	private boolean hasSelection;
 	private String boardType;
+	private Random rand = new Random();
 	
 	public Board(int boardSize, String boardType) {
 		board = new Peg[boardSize][boardSize];
@@ -86,7 +89,7 @@ public class Board {
 		board[mid][mid] = new Peg(0,mid,mid);
 	}
 	
-	private boolean checkWin() {
+	public boolean checkWin() {
 		int count = 0;
 		for(int row = 0;row<boardSize;row++) {
 			for(int col = 0;col<boardSize;col++) {
@@ -100,7 +103,7 @@ public class Board {
 		}
 		return true; //returns true if there are 1 or less alive pegs (0 shouldnt be possible)
 	}
-	private boolean isValidMove(int row, int col, int newRow, int newCol) {
+	public boolean isValidMove(int row, int col, int newRow, int newCol) {
 	    // Bounds check
 	    if (newRow < 0 || newRow >= boardSize || newCol < 0 || newCol >= boardSize) {
 	        return false;
@@ -131,6 +134,20 @@ public class Board {
 	    board[row][col].setAlive(0); // source becomes empty
 	    board[midRow][midCol].setAlive(0);   // jumped peg removed
 	    board[newRow][newCol].setAlive(1);     // destination gets peg
+	}
+	
+	public void randomizeBoard() {
+		int rowDecider,colDecider; //decides which row/col will be randomized
+		
+		int numTimes = rand.nextInt(1,boardSize); //number of times a random peg will be randomized
+		for(int i = 0;i<numTimes;i++) {
+			do {
+				rowDecider = rand.nextInt(0, boardSize);
+				colDecider = rand.nextInt(0, boardSize);
+			}while(board[rowDecider][colDecider].getIsAlive() == -1);
+			
+			board[rowDecider][colDecider].flip();
+		}
 	}
 	
 	public boolean isGameOver() {
@@ -211,4 +228,5 @@ public class Board {
 			}
 		}
 	}
+	
 }

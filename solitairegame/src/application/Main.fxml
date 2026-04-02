@@ -14,7 +14,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
-      <Button layoutX="485.0" layoutY="176.0" mnemonicParsing="false" onAction="#newGame" text="New Game" />
+      <Button layoutX="485.0" layoutY="176.0" mnemonicParsing="false" onAction="#newGame" onMouseClicked="#newGameMouseEvent" text="New Game" />
       <RadioButton id="englishBoard" fx:id="eng" layoutX="28.0" layoutY="131.0" mnemonicParsing="false" onAction="#boardType" selected="true" text="English">
          <toggleGroup>
             <ToggleGroup fx:id="boardType" />
@@ -57,5 +57,22 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
+      <Text id="winLoseText" fx:id="winLose" layoutX="143.0" layoutY="52.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="WinLose" textAlignment="CENTER" wrappingWidth="294.3779296875">
+         <font>
+            <Font name="System Bold" size="50.0" />
+         </font>
+      </Text>
+      <Text id="invalidMoveText" fx:id="invalidMove" layoutX="437.0" layoutY="108.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Invalid Move" textAlignment="CENTER" wrappingWidth="132.8779296875">
+         <font>
+            <Font name="System Italic" size="20.0" />
+         </font>
+      </Text>
+      <RadioButton fx:id="manual" layoutX="479.0" layoutY="123.0" mnemonicParsing="false" onAction="#gameType" selected="true" text="Manual">
+         <toggleGroup>
+            <ToggleGroup fx:id="gameType" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="automatic" layoutX="479.0" layoutY="148.0" mnemonicParsing="false" onAction="#gameType" text="Automatic" toggleGroup="$gameType" />
+      <Button layoutX="490.0" layoutY="333.0" mnemonicParsing="false" onAction="#randomize" text="Randomize" />
    </children>
 </AnchorPane>

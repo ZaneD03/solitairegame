@@ -35,6 +35,15 @@ public class Peg {
 	public boolean getIsSelected() {
 		return isSelected;
 	}
+	public void flip() {
+		//change peg state to opposite value
+		if(isAlive == 0) {
+			isAlive = 1;
+		}
+		else if(isAlive == 1) {
+			isAlive = 0;
+		}
+	}
 	
 	
 }
