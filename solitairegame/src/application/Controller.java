@@ -142,14 +142,13 @@ public class Controller implements Initializable{
 		
 		for(int row = 0;row<boardSize;row++) {
 			for(int col = 0;col<boardSize;col++) {
-				Peg currPeg = logicBoard.getBoardAt(row,col);
 				Button currBtn = buttons[row][col];
-				if(currPeg.getIsAlive() == -1) {
+				if(logicBoard.getPegState(row, col) == -1) {
 					currBtn.setOpacity(0);
 					currBtn.setDisable(true);
 					currBtn.setText("");
 				}
-				else if(currPeg.getIsAlive() == 0) {
+				else if(logicBoard.getPegState(row, col) == 0) {
 					currBtn.setOpacity(1);
 					currBtn.setDisable(false);
 					currBtn.setText("0");
@@ -159,7 +158,7 @@ public class Controller implements Initializable{
 					currBtn.setOpacity(1);
 					currBtn.setDisable(false);
 					currBtn.setText("●");
-					if (currPeg.getIsSelected()) {
+					if (logicBoard.isPegSelected(row, col)) {
 	                    currBtn.setStyle("-fx-background-color: blue;");
 	                } 
 					else {
@@ -229,7 +228,7 @@ public class Controller implements Initializable{
 			do { //finds valid space for first click
 				randRow = rand.nextInt(boardSize);
 				randCol = rand.nextInt(boardSize);
-			}while(logicBoard.getBoardAt(randRow, randCol).getIsAlive() != 1);
+			}while(logicBoard.getPegState(randRow, randCol) != 1);
 			
 			//Finds first valid move for jump (second click) (orthogonal)
 			if(logicBoard.isValidMove(randRow, randCol, randRow-2, randCol)) {

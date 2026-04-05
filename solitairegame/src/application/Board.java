@@ -215,11 +215,11 @@ public class Board {
 		
 	}
 	
-	public Peg[][] getBoard() {
-		return board;
+	public int getPegState(int row,int col) {
+		return board[row][col].getIsAlive();
 	}
-	public Peg getBoardAt(int row, int col) {
-		return board[row][col];
+	public boolean isPegSelected(int row, int col) {
+		return board[row][col].getIsSelected();
 	}
 	public void printBoard(){
 		for(int row = 0;row<boardSize;row++) {
