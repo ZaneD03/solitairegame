@@ -33,6 +33,12 @@ public class Board {
 			System.out.println("Board.java: invalid boardType when constructing");//shouldnt be possible, replace with exception being thrown later
 		}
 	}
+	public int getBoardSize() {
+		return boardSize;
+	}
+	public String getBoardType() {
+		return boardType;
+	}
 	
 	private void englishBoard() {
 		int invalidBand = boardSize / 2 - 1;
