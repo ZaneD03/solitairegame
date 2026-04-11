@@ -8,6 +8,7 @@ public class Board {
 	private boolean hasSelection;
 	private String boardType;
 	private Random rand = new Random();
+	private int randRowDecider,randColDecider; //variables for the randomizeBoard function
 	
 	public Board(int boardSize, String boardType) {
 		board = new Peg[boardSize][boardSize];
@@ -143,17 +144,21 @@ public class Board {
 	}
 	
 	public void randomizeBoard() {
-		int rowDecider,colDecider; //decides which row/col will be randomized
+		do {
+			randRowDecider = rand.nextInt(0, boardSize);
+			randColDecider = rand.nextInt(0, boardSize);
+		}while(board[randRowDecider][randColDecider].getIsAlive() == -1);
 		
-		int numTimes = rand.nextInt(1,boardSize); //number of times a random peg will be randomized
-		for(int i = 0;i<numTimes;i++) {
-			do {
-				rowDecider = rand.nextInt(0, boardSize);
-				colDecider = rand.nextInt(0, boardSize);
-			}while(board[rowDecider][colDecider].getIsAlive() == -1);
-			
-			board[rowDecider][colDecider].flip();
-		}
+		board[randRowDecider][randColDecider].flip();
+	}
+	public void flipAt(int row,int col) {
+		board[row][col].flip();
+	}
+	public int getRandRowDecider() {
+		return randRowDecider;
+	}
+	public int getRandColDecider() {
+		return randColDecider;
 	}
 	
 	public boolean isGameOver() {

@@ -90,7 +90,7 @@ public class Controller implements Initializable{
 	        replay.setup();
 	        boardType = replay.getBoardType();
 	        boardSize = replay.getBoardSize();
-	        replaySpeed = ((int) replaySpeedSlider.getValue()); //NOT WORKING
+	        replaySpeed = ((int) replaySpeedSlider.getValue()); //NOT WORKING TODO
 	        initBoard();
 	        setBoard();
 
@@ -101,8 +101,16 @@ public class Controller implements Initializable{
 	            KeyFrame keyFrame = new KeyFrame(
 	                Duration.millis(replaySpeed * i),
 	                event -> {
-	                    replay.processLine();
-	                    buttonClick(replay.getRow(),replay.getCol(),defaultMousePosition);
+	                    String result = replay.processLine();
+	                    switch(result) {
+	                    case "randomize" -> {
+	                    	logicBoard.flipAt(replay.getRow(),replay.getCol());
+	                    	setBoard();
+	                    }
+	                    case "normal" -> {
+	                    	 buttonClick(replay.getRow(),replay.getCol(),defaultMousePosition);
+	                    }
+	                    }
 	                }
 	            );
 
@@ -141,7 +149,11 @@ public class Controller implements Initializable{
 	@FXML
 	public void randomize(ActionEvent e) {
 		if(gameActive) {
-			logicBoard.randomizeBoard();
+			int randNumTimes = rand.nextInt(1,boardSize); //number of times a random peg will be randomized
+			for(int i = 0;i<randNumTimes;i++) {
+				logicBoard.randomizeBoard();
+				replay.storeRandomize(logicBoard.getRandRowDecider(),logicBoard.getRandColDecider());
+			}
 			setBoard();
 		}
 		

@@ -7,16 +7,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Replay {
-	BufferedWriter writer;
-	BufferedReader reader;
-	int numMoves,currMove,currRow,currCol,boardSize;
-	String boardType;
+	private BufferedWriter writer;
+	private BufferedReader reader;
+	private int numMoves,currRow,currCol,boardSize;
+	private String boardType;
 	
 	public Replay(Board board) {
 		try {
 			writer = new BufferedWriter(new FileWriter("replay.txt"));
 			numMoves = 0;
-			currMove = 0;
 			writer.write("boardType "+ board.getBoardType());
 			writer.newLine();
 			writer.write("boardSize "+ board.getBoardSize());
@@ -36,14 +35,39 @@ public class Replay {
 			System.out.println("store failed");
 		}
 	}
-	public void processLine() {
+	public String processLine() {
 		try {
 			String rawLine = reader.readLine();
-			String[] rowColArray = rawLine.split(" ");
-			currRow = Integer.parseInt(rowColArray[0]);
-			currCol = Integer.parseInt(rowColArray[1]);
+			if(rawLine.equals("randomize")) {
+				rawLine = reader.readLine();
+				updateRowCol(rawLine);
+				return("randomize");
+			}
+			else {
+				updateRowCol(rawLine);
+				return("normal");
+			}
 		} catch (IOException e) {
 			System.out.println("processLine failed");
+			return("failed");
+		}
+		
+	}
+	public void updateRowCol(String rawLine) {
+		String[] rowColArray = rawLine.split(" ");
+		currRow = Integer.parseInt(rowColArray[0]);
+		currCol = Integer.parseInt(rowColArray[1]);
+	}
+	public void storeRandomize(int row,int col) {
+		try {
+			writer.write("randomize");
+			writer.newLine();
+			writer.write(row +" "+col);
+			writer.newLine();
+			numMoves++;
+			
+		} catch (IOException e) {
+			System.out.println("randomize failed");
 		}
 		
 	}
@@ -52,7 +76,6 @@ public class Replay {
 			writer.flush();
 			writer.close();
 			//save file
-			
 			
 			reader = new BufferedReader(new FileReader("replay.txt"));
 			String currLine = reader.readLine();
