@@ -8,11 +8,14 @@ import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.input.MouseEvent;
@@ -36,20 +39,24 @@ public class Controller implements Initializable{
 	private Text invalidMove;
 	@FXML
 	private MouseEvent defaultMousePosition;
+	@FXML 
+	private Slider replaySpeedSlider;
 	
 	private Button[][] buttons; //grid for buttons
 	private Board logicBoard;
-	private int boardSize; //int value to store board size for logic implementation
+	private int boardSize,replaySpeed;
 	private String boardType; //"english","hexagon","Diamond"
 	private String gameType; // "manual" or "automatic"
-	private boolean gameActive = false;
+	private boolean gameActive,replayActive = false;
 	private Random rand = new Random();
+	private Replay replay;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		//DEFAULT CONFIGURATION FOR FIRST LAUNCH
 		SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(5,11,7,2);
 		boardSizeSpinner.setValueFactory(valueFactory);
+		replaySpeedSlider = new Slider(1,1000,500);
 		boardType ="english";
 		gameType = "manual";
 		winLose.setOpacity(0);
@@ -62,13 +69,58 @@ public class Controller implements Initializable{
 		//When the New Game button is selected, a new game is started based on boardType,boardSize, and gameType
 		winLose.setOpacity(0);
 		boardSize = boardSizeSpinner.getValue();
+		gameActive = true;
+		replayActive = false;
 		initBoard();
 		setBoard();
-		gameActive = true;
 		if(gameType.equals("automatic")) {
 			automate();
 		}
 	}
+	
+	@FXML
+	public void replay(ActionEvent e) {
+	    if (!gameActive) {
+	        replayActive = true;
+	        gameActive = true;
+	        winLose.setOpacity(0);
+	        winLose.setText("winLose");
+	        
+	        // setup replay data
+	        replay.setup();
+	        boardType = replay.getBoardType();
+	        boardSize = replay.getBoardSize();
+	        replaySpeed = ((int) replaySpeedSlider.getValue()); //NOT WORKING TODO
+	        initBoard();
+	        setBoard();
+
+	        Timeline timeline = new Timeline();
+
+	        for (int i = 0; i < replay.getNumMoves(); i++) {
+
+	            KeyFrame keyFrame = new KeyFrame(
+	                Duration.millis(replaySpeed * i),
+	                event -> {
+	                    String result = replay.processLine();
+	                    switch(result) {
+	                    case "randomize" -> {
+	                    	logicBoard.flipAt(replay.getRow(),replay.getCol());
+	                    	setBoard();
+	                    }
+	                    case "normal" -> {
+	                    	 buttonClick(replay.getRow(),replay.getCol(),defaultMousePosition);
+	                    }
+	                    }
+	                }
+	            );
+
+	            timeline.getKeyFrames().add(keyFrame);
+	        }
+
+	        timeline.play();
+	    }
+	}
+	
 	
 	@FXML
 	public void boardType(ActionEvent e) {
@@ -97,7 +149,11 @@ public class Controller implements Initializable{
 	@FXML
 	public void randomize(ActionEvent e) {
 		if(gameActive) {
-			logicBoard.randomizeBoard();
+			int randNumTimes = rand.nextInt(1,boardSize); //number of times a random peg will be randomized
+			for(int i = 0;i<randNumTimes;i++) {
+				logicBoard.randomizeBoard();
+				replay.storeRandomize(logicBoard.getRandRowDecider(),logicBoard.getRandColDecider());
+			}
 			setBoard();
 		}
 		
@@ -115,6 +171,10 @@ public class Controller implements Initializable{
 	    boardSize = boardSizeSpinner.getValue();
 	    logicBoard = new Board(boardSize,boardType);
 	    buttons = new Button[boardSize][boardSize];
+	    
+	    if(!replayActive) {
+	    	replay = new Replay(logicBoard);
+	    }
 	    for (int i = 0; i < boardSize; i++) {
 	        ColumnConstraints col = new ColumnConstraints();
 	        col.setPercentWidth(100.0 / boardSize);
@@ -171,6 +231,9 @@ public class Controller implements Initializable{
 	private void buttonClick(int row,int col, MouseEvent e) {
 		if(gameActive) { //only allows input when the game is not over
 			String result = logicBoard.clickHandler(row, col);
+			if(!replayActive) {
+				replay.store(row, col);
+			}
 			
 			// Refresh the entire board display after every click
 			setBoard();
@@ -206,6 +269,7 @@ public class Controller implements Initializable{
 			winLose.setOpacity(1);
 		}
 		gameActive = false;
+		replayActive = false;
 	}
 	private void invalidMove(MouseEvent e) {
 		//Quickly displays a message telling the user their move was invalid at users current mouse position
@@ -250,4 +314,5 @@ public class Controller implements Initializable{
 		}while(gameActive); //runs until game is over
 		
 	}
+	
 }
